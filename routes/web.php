@@ -18,3 +18,4 @@ Route::get('/', function () {
 
 Route::resource('admin', 'adminController');
 Route::resource('mahasiswa', 'mahasiswaController');
+Route::resource('test', 'nilaiAdminController');
