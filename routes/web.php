@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
+
+
+Route::resource('admin', 'adminController');
+Route::resource('mahasiswa', 'mahasiswaController');
