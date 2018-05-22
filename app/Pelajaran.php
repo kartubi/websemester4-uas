@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pelajaran extends Model
 {
+    protected $pelajaran = 'pelajaran';
     //
 }
