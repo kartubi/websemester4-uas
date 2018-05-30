@@ -68,7 +68,7 @@ class UserController extends Controller
         return redirect('/admin/login')
             ->withSuccess('Terimakasih, selamat datang kembali!');
     }
-    public function index($id){
+    public function mhs($id){
         $smt = DB::select('SELECT semester.id,semester.name 
                             from semester
                             left join mahasiswa on semester.id = mahasiswa.semester_id
@@ -77,7 +77,7 @@ class UserController extends Controller
                             ORDER BY semester.id asc');
 
         $info = Mahasiswa::where('id',$id)->first();
-        return view('admin.index',[
+        return view('admin.mhs',[
             'semester' => $smt,
             'info'      => $info
         ]);
@@ -105,9 +105,44 @@ class UserController extends Controller
         return DataTables::of($data)
             ->addColumn('action',function($data){
                 return
-                    '<a onClick="editNilai('."'$data->id'".')" class="btn btn-primary btn-xs"><i class="material-icons" style="color:#DD2C00;">edit</i>&nbsp</a>';
+                    '<a onClick="editNilai('."'$data->id'".')" class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>';
             })
             ->make(true);
+    }
+    public function edit_nilai($id,$mhs,$smt)
+    {
+        $data = Nilai::where('pelajaran_id',$id)->where('mahasiswa_id',$mhs)->where('semester_id',$smt)->first();
+        return $data;
+    }
+    public function show_mhs()
+    {
+        $data = Mahasiswa::all();
+        return DataTables::of($data)
+            ->addColumn('action',function($data){
+                return
+                    '<a href="admin/mhs/'."$data->id".'" class="btn btn-primary btn-xs"><i class="material-icons" style="color:#DD2C00;">edit</i>&nbsp</a>';
+            })
+            ->make(true);
+    }
+    public function index()
+    {
+        return view('admin.index');
+    }
+    public function kirim_nilai(Request $request)
+    {
+        $pelajaran_id = Input::get('id');
+        $mhs    = Input::get('mhs');
+        $smt = Input::get('smt');
+        $data = new Nilai();
+        $data->tugas = $request->tugas;
+        $data->formatif = $request->formatif;
+        $data->UTS  = $request->UTS;
+        $data->UAS  = $request->UAS;
+        $data->pelajaran_id = $pelajaran_id;
+        $data->mahasiswa_id = $mhs;
+        $data->semester_id  = $smt;
+        $data->save();
+        return 'berhasil';
     }
     //
 }

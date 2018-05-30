@@ -16,7 +16,9 @@
 </head>
 <body>
 <nav class="green lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a class="h6" href="/barang">PENILAIAN</a>
+    <div class="nav-wrapper container"><a class="h6" href="admin">PENILAIAN</a>
+    </div>
+    <div class=" pull-right"><a class="h6" href="/logout">LOGOUT</a>
     </div>
 </nav>
 <div class="container">

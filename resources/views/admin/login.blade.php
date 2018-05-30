@@ -94,8 +94,9 @@
                     var toastHTML = '<span>'+res.data+'</span>';
                     M.toast({html: toastHTML});
                 }else{
-                    alert('success')
-                    window.location('admin')
+                    var toastHTML = '<span>'+res.data+'</span>';
+                    M.toast({html: toastHTML});
+                    window.location({{url('admin')}})
                 }
                 console.log(res)
             }
