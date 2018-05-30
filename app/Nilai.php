@@ -7,4 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Nilai extends Model
 {
     protected $table = 'nilai';
+    public $fillable = [
+      'tugas' , 'formatif' , 'UAS' , 'UTS'
+    ];
 }

@@ -100,8 +100,10 @@ class UserController extends Controller
                        end 
                        as kumulatif 
                        from `nilai` 
-                       right join `pelajaran` on `nilai`.`pelajaran_id` = `pelajaran`.`id` and `nilai`.`semester_id` = '.$cari.' 
-                       left join `mahasiswa` on `mahasiswa`.`id` = `nilai`.`mahasiswa_id` and `mahasiswa`.`id` = '.$id_mhs.'');
+                       right join `pelajaran` on `nilai`.`pelajaran_id` = `pelajaran`.`id` 
+                       and `nilai`.`semester_id` = '.$cari.' 
+                       and `nilai`.`mahasiswa_id` = '.$id_mhs.'
+                       ');
         return DataTables::of($data)
             ->addColumn('action',function($data){
                 return
@@ -130,19 +132,41 @@ class UserController extends Controller
     }
     public function kirim_nilai(Request $request)
     {
+        $rules = [
+          'tugas'   => 'required',
+          'formatif'   => 'required',
+          'UTS'   => 'required',
+          'UAS'   => 'required',
+        ];
+
         $pelajaran_id = Input::get('id');
         $mhs    = Input::get('mhs');
         $smt = Input::get('smt');
-        $data = new Nilai();
-        $data->tugas = $request->tugas;
-        $data->formatif = $request->formatif;
-        $data->UTS  = $request->UTS;
-        $data->UAS  = $request->UAS;
-        $data->pelajaran_id = $pelajaran_id;
-        $data->mahasiswa_id = $mhs;
-        $data->semester_id  = $smt;
-        $data->save();
-        return 'berhasil';
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails())
+            return $this->res($validator->errors()->first());
+        $count = Nilai::where('pelajaran_id',$pelajaran_id)->where('mahasiswa_id',$mhs)->where('semester_id',$smt)->first();
+//        return $count->count();
+        if(!$count){
+            $data = new Nilai();
+            $data->tugas = $request->tugas;
+            $data->formatif = $request->formatif;
+            $data->UTS  = $request->UTS;
+            $data->UAS  = $request->UAS;
+            $data->pelajaran_id = $pelajaran_id;
+            $data->mahasiswa_id = $mhs;
+            $data->semester_id  = $smt;
+            $data->save();
+            return $this->res('Tambah Nilai berhasil',true);
+        }else{
+            $count->update([
+               'tugas'  => $request->tugas,
+               'formatif' => $request->formatif,
+                'UTS'       => $request->UTS,
+                'UAS'       => $request->UAS
+            ]);
+            return $this->res('Update berhasil',true);
+        }
     }
     //
 }
