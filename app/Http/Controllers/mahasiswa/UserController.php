@@ -1,24 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\mahasiswa;
 
 use App\Mahasiswa;
-use App\Nilai;
-use App\Semester;
-use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Input;
-use Validator;
-use Route;
-use DB;
-use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-
     public function Login(Request $request)
     {
         if ($request->method() == 'POST') :
@@ -30,7 +23,7 @@ class UserController extends Controller
             $validator = Validator::make($req, $rules);
             if ($validator->fails())
                 return $this->res($validator->errors()->first());
-            $user = User::where('email', $request->email)->first();
+            $user = Mahasiswa::where('email', $request->email)->first();
 
             if (! $user) {
 
@@ -48,36 +41,26 @@ class UserController extends Controller
             return $this->res('Login berhasil',true);
 
         else:
-            if (Auth::check())
-            {
-                return redirect('/admin');
-            }
-            return view('admin.login',[
+//            if (Auth::check())
+//            {
+//                return redirect('/mahasiswa');
+//            }
+            return view('mahasiswa.login',[
                 'name' => $name = Route::currentRouteName()
             ]);
         endif;
     }
-    public function logout(Request $request)
-    {
-        $this->guard()->logout();
-
-        $request->session()->flush();
-
-        $request->session()->regenerate();
-
-        return redirect('/admin/login')
-            ->withSuccess('Terimakasih, selamat datang kembali!');
-    }
-    public function mhs($id){
+    public function mhs(){
+        $user = Auth::user()->id;
         $smt = DB::select('SELECT semester.id,semester.name 
                             from semester
                             left join mahasiswa on semester.id = mahasiswa.semester_id
-                            where semester.id <= (SELECT semester_id from mahasiswa where mahasiswa.id = '.$id.')
+                            where semester.id <= (SELECT semester_id from mahasiswa where mahasiswa.id = '.$user.')
                             
                             ORDER BY semester.id asc');
 
-        $info = Mahasiswa::where('id',$id)->first();
-        return view('admin.mhs',[
+        $info = Mahasiswa::where('id',$user)->first();
+        return view('mahasiswa.index',[
             'semester' => $smt,
             'info'      => $info
         ]);
@@ -103,46 +86,6 @@ class UserController extends Controller
                        right join `pelajaran` on `nilai`.`pelajaran_id` = `pelajaran`.`id` and `nilai`.`semester_id` = '.$cari.' 
                        left join `mahasiswa` on `mahasiswa`.`id` = `nilai`.`mahasiswa_id` and `mahasiswa`.`id` = '.$id_mhs.'');
         return DataTables::of($data)
-            ->addColumn('action',function($data){
-                return
-                    '<a onClick="editNilai('."'$data->id'".')" class="waves-effect waves-light btn modal-trigger" href="#modal1">Edit nilai</a>';
-            })
             ->make(true);
     }
-    public function edit_nilai($id,$mhs,$smt)
-    {
-        $data = Nilai::where('pelajaran_id',$id)->where('mahasiswa_id',$mhs)->where('semester_id',$smt)->first();
-        return $data;
-    }
-    public function show_mhs()
-    {
-        $data = Mahasiswa::all();
-        return DataTables::of($data)
-            ->addColumn('action',function($data){
-                return
-                    '<a href="admin/mhs/'."$data->id".'" class="btn btn-primary btn-xs"><i class="material-icons" style="color:#DD2C00;">edit</i>&nbsp</a>';
-            })
-            ->make(true);
-    }
-    public function index()
-    {
-        return view('admin.index');
-    }
-    public function kirim_nilai(Request $request)
-    {
-        $pelajaran_id = Input::get('id');
-        $mhs    = Input::get('mhs');
-        $smt = Input::get('smt');
-        $data = new Nilai();
-        $data->tugas = $request->tugas;
-        $data->formatif = $request->formatif;
-        $data->UTS  = $request->UTS;
-        $data->UAS  = $request->UAS;
-        $data->pelajaran_id = $pelajaran_id;
-        $data->mahasiswa_id = $mhs;
-        $data->semester_id  = $smt;
-        $data->save();
-        return 'berhasil';
-    }
-    //
 }

@@ -96,7 +96,7 @@
                 }else{
                     var toastHTML = '<span>'+res.data+'</span>';
                     M.toast({html: toastHTML});
-                    window.location({{url('admin')}})
+                    location.replace("{{url('admin')}}")
                 }
                 console.log(res)
             }

@@ -9,22 +9,18 @@
             min-height: 100vh;
             flex-direction: column;
         }
-
         main {
             flex: 1 0 auto;
         }
-
         body {
             background: #fff;
         }
-
         .input-field input[type=date]:focus + label,
         .input-field input[type=text]:focus + label,
         .input-field input[type=email]:focus + label,
         .input-field input[type=password]:focus + label {
             color: #e91e63;
         }
-
         .input-field input[type=date]:focus,
         .input-field input[type=text]:focus,
         .input-field input[type=email]:focus,
@@ -39,11 +35,12 @@
 <div class="section"></div>
 <main>
     <center>
-        <img class="responsive-img" style="width: 250px;" src="/img/logo.jpg" />
+        <img class="responsive-img" style="width: 250px;" src="{{url('img/logo.jpg')}}" />
         <div class="container">
             <div class="z-depth-1 grey lighten-4 row" style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
 
-                <form class="col s12" method="post">
+                <form class="col s12" id="login_form">
+                    {!! csrf_field() !!}
                     <div class='row'>
                         <div class='col s12'>
                         </div>
@@ -67,7 +64,7 @@
                     <br />
                     <center>
                         <div class='row'>
-                            <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect green'>Login</button>
+                            <a type='submit' id='btn_login' name='btn_login' class='col s12 btn btn-large waves-effect green'>Login</a>
                         </div>
                     </center>
                 </form>
@@ -81,7 +78,29 @@
 </main>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+<script type="text/javascript" src="https://materializecss.com/bin/materialize.js"></script>
 </body>
+<script>
+    $('#btn_login').click(function () {
 
+        var form_data = $('#login_form').serialize();
+        $.ajax({
+            url:"{{url('mahasiswa/login')}}",
+            type:"POST",
+            data:form_data,
+
+            success:function (res) {
+                if(res.success == false){
+                    var toastHTML = '<span>'+res.data+'</span>';
+                    M.toast({html: toastHTML});
+                }else{
+                    var toastHTML = '<span>'+res.data+'</span>';
+                    M.toast({html: toastHTML});
+                    location.replace("{{url('mahasiswa')}}")
+                }
+                console.log(res)
+            }
+        });
+    })
+</script>
 </html>

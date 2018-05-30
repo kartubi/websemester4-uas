@@ -4,18 +4,26 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Daftar barang</h2>
+                <h2>{{$info->name}}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 margin-tb">
+            <div class="pull-left">
+                <h2>NILAI {{strtoupper($info->name)}}</h2>
             </div>
         </div>
     </div>
 
-    <a href="{{route('barang.create')}}" class="btn base-color lighten-1">Tambah Data</a>
-
-    @if($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{$message}}</p>
-        </div>
-    @endif
+    <!-- Dropdown Trigger -->
+    <a class='dropdown-trigger btn' id="smt_trigger" href='#' data-target='dropdown1'>SEMESTER</a>
+    <!-- Dropdown Structure -->
+    <ul id='dropdown1' class='dropdown-content'>
+        @foreach($semester as $smt)
+            <li style="white-space: nowrap"><a id="{{$smt->id}}">{{strtoupper($smt->name)}}</a></li>
+        @endforeach
+    </ul>
 
     <table class="bordered">
         <tr>

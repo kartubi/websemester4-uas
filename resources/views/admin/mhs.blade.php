@@ -51,7 +51,7 @@
     </table>
     <div id="modal1" class="modal">
         <div class="modal-content">
-            <h4>Modal Header</h4>
+            <h4>Tambah Nilai</h4>
             <div class="row">
             <form id="nilai">
                 {!! csrf_field()  !!}
@@ -168,7 +168,9 @@
                 type:"POST",
                 data:form_data,
                 success:function (res) {
-                    console.log(res)
+                    console.log(res);
+                    var toastHTML = '<span>'+res.data+'</span>';
+                    M.toast({html: toastHTML});
                     $('#table_nilai').DataTable().ajax.reload();
                     $('#nilai')[0].reset();
                 }
