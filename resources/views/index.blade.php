@@ -39,7 +39,7 @@
 <div class="section"></div>
 <main>
     <center>
-        <img class="responsive-img" style="width: 250px;" src="/img/logo.jpg" />
+        <img class="responsive-img" style="width: 250px;" src="{{url('/img/logo.jpg')}}" />
         <div class="row">
         <div class="section">
             <a href="{{url('admin')}}" class="col s2 offset-s5 btn btn-large waves-effect green">LOGIN ADMIN</a>
