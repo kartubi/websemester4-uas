@@ -39,7 +39,7 @@ Route::group(['prefix'=>'mahasiswa'],function (){
     Route::any('login','mahasiswa\UserController@Login');
     Route::group(['middleware' => 'auth:mahasiswa'],function(){
         Route::get('/','mahasiswa\UserController@mhs');
-        Route::get('/get','mahasiswa\UserController@show');
+        Route::get('/data/get','mahasiswa\UserController@show');
 
 
    });

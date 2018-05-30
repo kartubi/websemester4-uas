@@ -6,9 +6,12 @@ use App\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
@@ -36,7 +39,7 @@ class UserController extends Controller
                 return $this->res('Password not matched');
             }
 
-            Auth::login($user);
+            Auth::guard('mahasiswa')->login($user);
 
             return $this->res('Login berhasil',true);
 
@@ -68,7 +71,7 @@ class UserController extends Controller
     public function show()
     {
         $cari = Input::get('smt');
-        $id_mhs = Input::get('id_mhs');
+        $id_mhs = Auth::user()->id;
         $data = DB::select('select 
                       `pelajaran`.`id`, `pelajaran`.`name`, `pelajaran`.`sks`, 
                       `nilai`.`tugas`, `nilai`.`formatif`, `nilai`.`uts`, `nilai`.`uas`,

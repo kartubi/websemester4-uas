@@ -20,7 +20,8 @@ class LoginController extends Controller
 
     public function guard()
     {
-        return Auth::guard('user');
+        return Auth::guard('web');
 
     }
+
 }
